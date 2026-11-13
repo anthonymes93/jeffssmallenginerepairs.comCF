@@ -28,4 +28,4 @@ export async function onRequestPost({request,env}){
  const payload={from:"Website Enquiries <"+(env.CONTACT_FROM_EMAIL||"emails@rtuino.com")+">",to:[env.CONTACT_TO_EMAIL||"itsme@anthonymeszaros.com"],...(email?{reply_to:email}:{}),subject:"Website Enquiries",html,text:"Website Enquiries\nName: "+name+"\nEmail: "+(email||"Not provided")+"\nPhone: "+(phone||"Not provided")+"\nMessage:\n"+message};
  try{const result=await fetch("https://api.resend.com/emails",{method:"POST",headers:{Authorization:"Bearer "+env.RESEND_API_KEY,"Content-Type":"application/json"},body:JSON.stringify(payload)});if(!result.ok){console.error("Resend send failed",result.status);return json({ok:false,error:"Unable to send your message. Please try again."},502)}return json({ok:true});}catch{return json({ok:false,error:"Email service unavailable. Please try again."},502)}
 }
-export function onRequestGet(){return json({ok:false,error:"Method not allowed."},405)}
+export function onRequestGet({env}){return json({turnstileSiteKey:env.TURNSTILE_SITE_KEY||""})}
